@@ -1,0 +1,25 @@
+title: Actividad del usuario root en AWS
+id: a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1
+level: critical
+author: Ezequiel D'Astolfo
+date: 2025-07-02
+description: |
+  Detecta cualquier evento generado por la cuenta root de AWS a través de los logs de CloudTrail.
+  Este tipo de actividad debe ser mínima y estar estrictamente controlada.
+
+tags:
+  - attack.privilege_escalation
+  - attack.initial_access
+  - attack.t1078.004  # Valid Accounts: Cloud Accounts
+
+status: experimental
+
+logsource:
+  product: aws
+  service: cloudtrail
+
+detection:
+  selection:
+    userIdentity.type: 'Root'
+
+  condition: selection
