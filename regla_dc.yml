@@ -1,0 +1,42 @@
+title: Usuario agregado al grupo Domain Admins
+id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3o4p5q7
+level: high
+author: Ezequiel D'Astolfo
+date: 2025-07-02
+description: |
+  Detecta cuando un usuario es agregado al grupo "Domain Admins" en un entorno Windows.
+  El evento 4728 incluye los siguientes campos relevantes:
+  - SubjectUserName: el usuario que realizó la acción
+  - MemberName: la cuenta de usuario agregada al grupo
+  - TargetUserName: el nombre del grupo (ej: "Domain Admins")
+  - TimeCreated: fecha y hora del evento
+
+tags:
+  - attack.privilege_escalation
+  - attack.persistence
+  - attack.t1136.001  # Create Account: Domain Account
+  - attack.t1098      # Account Manipulation
+
+status: experimental
+
+logsource:
+  product: windows
+  service: security
+  category: group_management
+
+detection:
+  selection:
+    EventID: 4728
+    TargetUserName|contains: 'Domain Admins'
+
+  exception_admins_autorizados:
+    SubjectUserName:
+      - 'it_admin1'
+      - 'idm_svc'
+
+  exception_servers:
+    ComputerName|contains:
+      - 'IDM-SERVER'
+      - 'ARVDCB001'
+
+  condition: selection and not 1 of exception_*
